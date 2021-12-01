@@ -1,22 +1,27 @@
-﻿using Discord;
-using Discord.Addons.Hosting;
-using Discord.Commands;
-using Discord.WebSocket;
-using InternshipApp.Services;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿// <copyright file="Program.cs" company="JAEMACOM GmbH">
+// Copyright (c) JAEMACOM GmbH. All rights reserved.
+// </copyright>
 
 namespace InternshipApp
 {
-    class Program
-    {
+    using System.IO;
+    using System.Threading.Tasks;
+    using Discord;
+    using Discord.Addons.Hosting;
+    using Discord.Commands;
+    using Discord.WebSocket;
+    using InternshipApp.Services;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
-        static async Task Main()
+    /// <summary>
+    /// The entry point of the bot.
+    /// </summary>
+    internal class Program
+    {
+        private static async Task Main()
         {
             var builder = new HostBuilder()
                 .ConfigureAppConfiguration(x =>
@@ -44,7 +49,7 @@ namespace InternshipApp
 
                     config.Token = context.Configuration["Token"];
                 })
-                .UseCommandService((ContextBoundObject, config) =>
+                .UseCommandService((contextBoundObject, config) =>
                 {
                     config.CaseSensitiveCommands = false;
                     config.LogLevel = LogSeverity.Debug;
