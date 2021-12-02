@@ -67,18 +67,19 @@ namespace InternshipApp.Services
 
         private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel msgChannel, SocketReaction reaction)
         {
-            if (!(reaction.User.ToString() == "InternshipBot#9757") && (reaction.Emote.Name == "✅"))
+            if (!(reaction.User.ToString() == "InternshipBot#9757") && (reaction.Emote.Name == "✅") && Modules.General.reactionMsgsId.Contains(reaction.MessageId))
             {
                 this.maScrum.Add(reaction.Message.ToString());
             }
 
-            if (!(reaction.User.ToString() == "InternshipBot#9757") && (reaction.Emote.Name == "➡️"))
+            if (!(reaction.User.ToString() == "InternshipBot#9757") && (reaction.Emote.Name == "➡️") && Modules.General.reactionMsgsId.Contains(reaction.MessageId))
             {
                 await msgChannel.SendMessageAsync("Starte Scrum-Meeting.");
 
                 this.scrumMeeting = new Scrum(this.maScrum, msgChannel);
+                this.maScrum = new HashSet<string>();
 
-                this.timer = new System.Timers.Timer(15000);
+                this.timer = new System.Timers.Timer(90000);
                 this.timer.AutoReset = true;
                 this.timer.Elapsed += this.OnTimedEvent;
                 this.scrumMeeting.nextSpeaker();

@@ -35,7 +35,9 @@
 
         public Scrum(HashSet<string> maScrum, ISocketMessageChannel msgChannel)
         {
+            this.doneSpeaker = new List<string>();
             this.maScrum = maScrum;
+            this.currentSpeaker = String.Empty;
             this.msgChannel = msgChannel;
             this.startTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             this.scrumFinished = false;

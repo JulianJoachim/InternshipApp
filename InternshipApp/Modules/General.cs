@@ -18,6 +18,8 @@ namespace InternshipApp.Modules
     /// </summary>
     public class General : ModuleBase<SocketCommandContext>
     {
+        public static List<ulong> reactionMsgsId = new List<ulong>();
+
         /// <summary>
         /// A Command that will respond with pong.
         /// </summary>
@@ -57,8 +59,8 @@ namespace InternshipApp.Modules
         public async Task DetailsBBAsync()
         {
             await this.ReplyAsync("Name: Bogdana Bondarenko\n" +
-                "Position: \n" +
-                "Im Unternehmen seit: ");
+                "Position: Frontend-Entwicklerin\n" +
+                "Im Unternehmen seit: 5 Jahren");
         }
 
         /// <summary>
@@ -81,8 +83,8 @@ namespace InternshipApp.Modules
         public async Task DetailsACAsync()
         {
             await this.ReplyAsync("Name: Ana Caballero\n" +
-                "Position: \n" +
-                "Im Unternehmen seit: ");
+                "Position: Front-End Entwicklerin\n" +
+                "Im Unternehmen seit: 9 Monaten");
         }
 
         /// <summary>
@@ -141,8 +143,8 @@ namespace InternshipApp.Modules
         public async Task DetailsDWAsync()
         {
             await this.ReplyAsync("Name: David Wasilewko\n" +
-                "Position: \n" +
-                "Im Unternehmen seit: ");
+                "Position: Fullstack Entwickler\n" +
+                "Im Unternehmen seit: April 2020");
         }
 
         /// <summary>
@@ -175,6 +177,7 @@ namespace InternshipApp.Modules
 
         public async Task StartScrum()
         {
+            reactionMsgsId.Clear();
             var maList = new List<string>()
                     {
                         "Bogdana Bondarenko",
@@ -196,10 +199,12 @@ namespace InternshipApp.Modules
             {
                 var sentLoop = await this.ReplyAsync($"{maList[i]}");
                 await sentLoop.AddReactionAsync(new Emoji("✅"));
+                reactionMsgsId.Add(sentLoop.Id);
             }
 
             var sent = await this.ReplyAsync("Reagiere auf den Haken unter dieser Nachricht um das Scrum Meeting zu starten.");
             await sent.AddReactionAsync(new Emoji("➡️"));
+            reactionMsgsId.Add(sent.Id);
         }
 
         [Command("nm")]
