@@ -170,6 +170,7 @@ namespace InternshipApp.Modules
         }
 
         [Command("startScrum")]
+        [Alias("ss", "scrum")]
         [RequireBotPermission(GuildPermission.AddReactions)]
 
         public async Task StartScrum()
@@ -199,6 +200,14 @@ namespace InternshipApp.Modules
 
             var sent = await this.ReplyAsync("Reagiere auf den Haken unter dieser Nachricht um das Scrum Meeting zu starten.");
             await sent.AddReactionAsync(new Emoji("➡️"));
+        }
+
+        [Command("nm")]
+        [Alias("next", "nächstes mitglied")]
+        public async Task NaechstesMitglied()
+        {
+            var sent = await this.ReplyAsync("Skippe zum Nächsten Teilnehmer...");
+            await sent.AddReactionAsync(new Emoji("⏩"));
         }
 
     }

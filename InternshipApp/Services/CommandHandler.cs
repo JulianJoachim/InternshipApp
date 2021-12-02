@@ -9,6 +9,7 @@ namespace InternshipApp.Services
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Timers;
     using Discord;
     using Discord.Addons.Hosting;
     using Discord.Commands;
@@ -24,7 +25,11 @@ namespace InternshipApp.Services
         private readonly DiscordSocketClient client;
         private readonly CommandService service;
         private readonly IConfiguration configuration;
+        private string currentSpeaker;
+        private List<string> doneSpeaker;
+        private System.Timers.Timer timer;
         private HashSet<string> maScrum = new HashSet<string>();
+        private Scrum scrumMeeting;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandHandler"/> class.
@@ -56,16 +61,48 @@ namespace InternshipApp.Services
         {
             if (!(reaction.User.ToString() == "InternshipBot#9757"))
             {
-                maScrum.Remove(reaction.Message.ToString());
-                await msgChannel.SendMessageAsync("Removed from List");
+                this.maScrum.Remove(reaction.Message.ToString());
             }
         }
 
-        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel msgChannel, SocketReaction reaction) {
-            if (!(reaction.User.ToString() == "InternshipBot#9757") && (reaction.Emote.Name == ""))
+        private async Task OnReactionAdded(Cacheable<IUserMessage, ulong> arg1, ISocketMessageChannel msgChannel, SocketReaction reaction)
+        {
+            if (!(reaction.User.ToString() == "InternshipBot#9757") && (reaction.Emote.Name == "✅"))
             {
-                maScrum.Add(reaction.Message.ToString());
-                await msgChannel.SendMessageAsync("Added to List");
+                this.maScrum.Add(reaction.Message.ToString());
+            }
+
+            if (!(reaction.User.ToString() == "InternshipBot#9757") && (reaction.Emote.Name == "➡️"))
+            {
+                await msgChannel.SendMessageAsync("Starte Scrum-Meeting.");
+
+                this.scrumMeeting = new Scrum(this.maScrum, msgChannel);
+
+                this.timer = new System.Timers.Timer(15000);
+                this.timer.AutoReset = true;
+                this.timer.Elapsed += this.OnTimedEvent;
+                this.scrumMeeting.nextSpeaker();
+                this.timer.Enabled = true;
+            }
+
+            if (reaction.User.ToString() == "InternshipBot#9757" && (reaction.Emote.Name == "⏩") && this.timer != null)
+            {
+                this.timer.Enabled = false;
+                this.scrumMeeting.nextSpeaker();
+                this.timer.Enabled = true;
+            }
+        }
+
+        private void OnTimedEvent(object? sender, ElapsedEventArgs e)
+        {
+            if (this.scrumMeeting.getScrumStatus() == true)
+            {
+                this.timer.Enabled = false;
+            }
+            else
+            {
+                this.scrumMeeting.nextSpeaker();
+
             }
         }
 
